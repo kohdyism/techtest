@@ -1,4 +1,4 @@
-# Description
+Description
 
 Link to URL Shortener: https://kohdyism.herokuapp.com/
 Apps used in URL Shortener: Node.js, MongoDB, Heroku, Express, Nanoid
