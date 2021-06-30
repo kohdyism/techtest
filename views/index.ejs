@@ -27,8 +27,6 @@
 
     <p id="line">Your Short URL will appear here.</p>
 
-    <p id="lined"></p>
-
     <br>
 
     <p style="font-size: 20px; font-weight: bold;">The latest 5 Short URLs created:</p>
@@ -61,7 +59,7 @@
       p.innerHTML = "<b>Your Short URL will appear here.<b>"
     }else if (sessionStorage.clickcount > 0) {
       try {
-        p.innerHTML = 'Your Short Url is <a  href ="<%= lastUrl %>">kohdyism.herokuapp.com/<%= lastUrl %></a>'
+        p.innerHTML = '<b><%= lastUrl %></b>'
       }
       catch(err) {
         skip;
@@ -79,6 +77,12 @@
         }
       }
     })
+
+    if($('div#status').text()!='')
+      {
+                alert($('div#status').text());
+      }
+
   </script>
   <style>
     body{
@@ -87,9 +91,12 @@
       background-size: cover; 
       color: black;
       font-family: 'Roboto', sans-serif;
+      
+    }
 
-      
-      
+    .invisible {
+      display: none;
+      visibility: hidden;
     }
 
   </style>

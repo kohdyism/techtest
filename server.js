@@ -4,6 +4,16 @@ const ShortUrl = require('./models/shortUrl')
 const app = express()
 const port = 4500
 
+function validURL(str) {
+  var pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
+    '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
+    '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
+    '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
+    '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
+    '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
+  return !!pattern.test(str)
+}
+
 //connect to MongoDB Database
 mongoose.connect(process.env.MONGO_URL || 'mongodb://localhost/testing', {
   useNewUrlParser: true, useUnifiedTopology: true
@@ -23,8 +33,9 @@ app.get('/', async (req, res) => {
 
   //if no shortUrls created, last URl is "okay" value, if shortUrls created, lastUrl is the latest URL created.
   if (shortUrls.length>=1){
-    var lastUrl = shortUrls[shortUrls.length -1].short
+    var lastUrls = shortUrls[shortUrls.length -1].short
 
+    var lastUrl = 'Your Short Url is www.kohdyim.herokuapp.com/' + lastUrls
   }else if (shortUrls.length==0 || undefined) {
     var lastUrl = "okay"
     //console.log(shortUrls.length)
@@ -32,16 +43,29 @@ app.get('/', async (req, res) => {
   }
   //render and send variables to index.ejs
   //console.log(lastUrl)
-  res.render('index', { shortUrls: shortUrls, lastUrl:lastUrl })
+  res.render('index', { shortUrls: shortUrls, lastUrl:lastUrl})
   
 })
 
 // receive POST request from index.ejs, using the long URL as arg to create a data object in MongoDB consisting of full URL, short URl, and clicks. 
 app.post('/shortUrls', async (req, res) => {
-  await ShortUrl.create({ full: req.body.fullUrl })
-  console.log({ full: req.body.fullUrl })
+  var p = validURL(req.body.fullUrl)
+  console.log(p)
+  console.log('P IS POSTED')
+  if (p == true){
+    await ShortUrl.create({ full: req.body.fullUrl })
+    console.log({ full: req.body.fullUrl })
 
-  res.redirect('/')
+    res.redirect('/')
+
+  } else if (p == false){
+    var lastUrl = "Please input a valid URL."
+
+    const shortUrls = await ShortUrl.find()
+
+    res.render('index', { shortUrls: shortUrls, lastUrl:lastUrl });
+
+  }
 })
 
 // when shortUrl is used, connect to database to retrieve long URL and redirect users to it on the browser, and add 1 to number of clicks on the short link.
