@@ -35,7 +35,7 @@ app.get('/', async (req, res) => {
   if (shortUrls.length>=1){
     var lastUrls = shortUrls[shortUrls.length -1].short
 
-    var lastUrl = 'Your Short Url is www.kohdyim.herokuapp.com/' + lastUrls
+    var lastUrl = 'Your Short Url is www.kohdyism.herokuapp.com/' + lastUrls
   }else if (shortUrls.length==0 || undefined) {
     var lastUrl = "okay"
     //console.log(shortUrls.length)
